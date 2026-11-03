@@ -1,30 +1,30 @@
-# basededatos2
+# BASEDEDATOS2
 
-Explicacion para entrar a mongosh
+## Instrucciones para ingresar a MongoDB mediante mongosh
 
-En tu powershell pega lo siguiente : 
+**1. Abrir PowerShell** en el computador.
 
-mongosh "mongodb+srv://clusterecommerce.uv7ifpb.mongodb.net/" --apiVersion 1 --username () --password ()
+**2. Copiar y pegar el siguiente comando:**
 
-Eliminas los () y los cambias por tus respectivas credenciales que dejo abajo 
+```bash
+mongosh "mongodb+srv://clusterecommerce.uv7ifpb.mongodb.net/" --apiVersion 1 --username TU_USUARIO --password TU_CONTRASEÑA
+```
 
-#Credenciales 
+**3. Reemplazar los datos:**
 
-Sus apellidos serán sus username y sus contraseñas estaran al lado de sus respectivos usuarios
+- `TU_USUARIO`: apellido correspondiente al integrante.
+- `TU_CONTRASEÑA`: contraseña asignada a ese usuario.
 
-nunez
-cN6oy8094WN65yhr
+## Credenciales de acceso
 
-ruiz
-g3jWCMQS6VskZLgj
+| Integrante | Usuario | Contraseña |
+|---|---|---|
+| Núñez | nunez | cN6oy8094WN65yhr |
+| Ruiz | ruiz | g3jWCMQS6VskZLgj |
+| Huerta | huerta | GrKLaOvoaFXPjHFI |
+| Tolentino | tolentino | fY5efgm8STlfw3Ro |
+| Mardones | mardones | KvN4ns4eWQZPwo7u |
 
-huerta
-GrKLaOvoaFXPjHFI
-
-tolentino 
-fY5efgm8STlfw3Ro
-
-mardones
-KvN4ns4eWQZPwo7u
+**Importante:** cada integrante debe utilizar exclusivamente sus propias credenciales para conectarse a MongoDB Atlas.
 
 
