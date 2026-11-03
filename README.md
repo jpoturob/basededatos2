@@ -1,5 +1,13 @@
 # BASEDEDATOS2
 
+## Instalación de MongoDB Shell (mongosh)
+
+Si no tienes instalado MongoDB Shell en tu computador, puedes descargarlo desde el siguiente enlace:
+
+[Descargar MongoDB Shell (mongosh) 2.14.1](https://downloads.mongodb.com/compass/mongosh-2.14.1-x64.msi)
+
+Una vez descargado, ejecuta el instalador y sigue los pasos para completar la instalación.
+
 ## Instrucciones para ingresar a MongoDB mediante mongosh
 
 **1. Abrir PowerShell** en el computador.
