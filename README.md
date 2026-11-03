@@ -10,7 +10,7 @@ Eliminas los () y los cambias por tus respectivas credenciales que dejo abajo
 
 #Credenciales 
 
-Sus apellidos serán sus username y las contraseñas estaran abajo de sus apellidos
+Sus apellidos serán sus username y sus contraseñas estaran al lado de sus respectivos usuarios
 
 nunez
 cN6oy8094WN65yhr
