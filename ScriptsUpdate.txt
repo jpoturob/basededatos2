@@ -1,1 +1,62 @@
+1. Actualizar un dispositivo con updateOne()
+db.dispositivos.updateOne(
+  { "nombre": "Sensor Ambiental 01" },
+  {
+    $set: {
+      "estado": "En mantenimiento",
+      "observacion": "Revisión técnica programada"
+    },
+    $currentDate: {
+      "fecha_actualizacion": true
+    }
+  }
+);
+
+2. Actualizar múltiples mediciones con updateMany()
+db.mediciones.updateMany(
+  {
+    "variable": "temperatura",
+    "valor": { $gt: 30 }
+  },
+  {
+    $set: {
+      "estado_medicion": "Requiere revisión"
+    },
+    $currentDate: {
+      "fecha_revision": true
+    }
+  }
+);
+
+ 3. Actualizar múltiples alertas con updateMany()
+db.alertas.updateMany(
+  {
+    "estado": "Pendiente",
+    "gravedad": "Alta"
+  },
+  {
+    $set: {
+      "estado": "En revisión"
+    },
+    $inc: {
+      "veces_revisada": 1
+    }
+  }
+);
+
+4. Actualizar un campo dentro de un documento embebido con updateOne()
+db.dispositivos.updateOne(
+  {
+    "nombre": "Sensor Ambiental 02"
+  },
+  {
+    $set: {
+      "configuracion.temperatura.umbral_maximo": 32
+    },
+    $currentDate: {
+      "fecha_actualizacion": true
+    }
+  }
+);
+
 
