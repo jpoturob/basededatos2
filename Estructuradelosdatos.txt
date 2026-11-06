@@ -1,0 +1,72 @@
+Espacios
+{
+  _id: ObjectId(),
+  nombre: "Sala 101",
+  tipo: "Sala de clases",
+  edificio: "Edificio A",
+  piso: 1,
+  capacidad: 40,
+  estado: "Activo",
+  ubicacion: {
+    sector: "Norte",
+    referencia: "Primer piso"
+  }
+}
+Dispositivo 
+{
+  _id: ObjectId(),
+  nombre: "Sensor Ambiental 01",
+  tipo: "Multisensor",
+  fabricante: "SensorTech",
+  modelo: "ST-100",
+  estado: "Activo",
+  espacio_id: ObjectId("690000000000000000000001"),
+  configuracion: {
+    temperatura: {
+      unidad: "°C",
+      umbral_minimo: 15,
+      umbral_maximo: 30
+    },
+    humedad: {
+      unidad: "%",
+      umbral_minimo: 20,
+      umbral_maximo: 70
+    },
+    co2: {
+      unidad: "ppm",
+      umbral_maximo: 1000
+    },
+    luminosidad: {
+      unidad: "lux",
+      umbral_minimo: 300
+    }
+  },
+  fecha_instalacion: ISODate("2026-10-01T10:00:00Z")
+}
+Mediciones
+{
+  _id: ObjectId(),
+  dispositivo_id: ObjectId("690000000000000000000002"),
+  variable: "temperatura",
+  valor: 28.5,
+  unidad: "°C",
+  fecha_medicion: ISODate("2026-11-03T10:30:00Z"),
+  origen: "Sensor IoT",
+  estado_medicion: "Normal"
+}
+Alertas
+{
+  _id: ObjectId(),
+  medicion_id: ObjectId("690000000000000000000003"),
+  dispositivo_id: ObjectId("690000000000000000000002"),
+  espacio_id: ObjectId("690000000000000000000001"),
+  tipo: "Temperatura elevada",
+  descripcion: "La temperatura superó el umbral máximo permitido.",
+  valor_detectado: 32.5,
+  umbral_establecido: 30,
+  gravedad: "Alta",
+  estado: "Pendiente",
+  fecha_generacion: ISODate("2026-11-03T11:00:00Z")
+}
+
+
