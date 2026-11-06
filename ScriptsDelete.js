@@ -38,3 +38,20 @@ print(`Se borrarán ${dispositivosIds.length} dispositivos`);
 if (dispositivosIds.length > 0) {
   db.Dispositivos.deleteMany({ _id: { $in: dispositivosIds } });
 }
+
+// Eliminar mediciones cuyo valor supere los 40 °C.
+// Se limita la eliminación a un máximo de 10 documentos.
+
+var medicionesIds = db.Mediciones.find(
+  {
+    variable: "temperatura",
+    valor: { $gt: 40 }
+  },
+  { _id: 1 }
+).limit(10).toArray().map(m => m._id);
+
+print(`Se borrarán ${medicionesIds.length} mediciones`);
+
+if (medicionesIds.length > 0) {
+  db.Mediciones.deleteMany({ _id: { $in: medicionesIds } });
+}
