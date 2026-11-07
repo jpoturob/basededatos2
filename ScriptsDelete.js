@@ -1,9 +1,14 @@
-// Eliminar mediciones antiguas (anteriores al 01-10-2026).
+// Eliminar mediciones anteriores al 01-10-2026 del dispositivo ESP32-001.
 // Se limita la eliminación a un máximo de 10 documentos.
 var medicionesIds = db.Mediciones.find(
-  { fecha_medicion: { $lt: ISODate("2026-10-01T00:00:00Z") } },
+  {
+    $and: [
+      { fecha_medicion: { $lt: ISODate("2026-10-01T00:00:00Z") } },
+      { origen: { $eq: "Sensor IoT" } }
+    ]
+  },
   { _id: 1 }
-).limit(10).toArray().map(m => m._id);
+).sort({ fecha_medicion: 1 }).limit(10).toArray().map(m => m._id);
 
 print(`Se borrarán ${medicionesIds.length} mediciones`);
 
@@ -15,7 +20,11 @@ if (medicionesIds.length > 0) {
 // Eliminar alertas que se encuentren en estado resuelto.
 // Se limita la eliminación a un máximo de 10 documentos.
 var alertasIds = db.Alertas.find(
-  { estado: "Resuelto" },
+  {
+    $or: [
+      { estado: { $eq: "Resuelto" } },
+      { tipo_alerta: { $eq: "Humedad baja" } }]
+  },
   { _id: 1 }
 ).limit(10).toArray().map(a => a._id);
 
@@ -29,7 +38,7 @@ if (alertasIds.length > 0) {
 // Eliminar dispositivos que se encuentren inactivos.
 // Se limita la eliminación a un máximo de 10 documentos.
 var dispositivosIds = db.Dispositivos.find(
-  { estado: "Inactivo" },
+  { estado: { $not: {$eq: "Activo"}} },
   { _id: 1 }
 ).limit(10).toArray().map(d => d._id);
 
@@ -39,16 +48,18 @@ if (dispositivosIds.length > 0) {
   db.Dispositivos.deleteMany({ _id: { $in: dispositivosIds } });
 }
 
-// Eliminar mediciones cuyo valor supere los 40 °C.
+// Eliminar mediciones de temperatura superiores a 40 °C.
 // Se limita la eliminación a un máximo de 10 documentos.
-
 var medicionesIds = db.Mediciones.find(
-  {
-    variable: "temperatura",
-    valor: { $gt: 40 }
-  },
+{
+  $and: [
+    { variable: { $regex: /^temperatura$/i } },
+    { valor: { $gt: 40 } },
+    { estado_medicion: { $eq: "Anormal" } }
+  ]
+},
   { _id: 1 }
-).limit(10).toArray().map(m => m._id);
+).sort({ valor: -1 }).limit(10).toArray().map(m => m._id);
 
 print(`Se borrarán ${medicionesIds.length} mediciones`);
 
