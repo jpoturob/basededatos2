@@ -1,4 +1,51 @@
 #Parte 1 
-
+db.espacios.find(
+  {
+    $and: [
+      { $or: [{ edificio: "Edificio A" }, { edificio: "Edificio B" }] },
+      { capacidad: { $gte: 30 } }
+    ]
+  },
+  { _id: 0, nombre: 1, tipo: 1, edificio: 1, capacidad: 1 }
+)
+db.mediciones.find(
+  {
+    estado_medicion: { $not: { $eq: "Normal" } }
+  },
+  { _id: 0, variable: 1, valor: 1, unidad: 1, estado_medicion: 1 }
+)
+db.mediciones.aggregate([
+  {
+    $match: { estado_medicion: "Normal" }
+  },
+  {
+    $group: {
+      _id: "$variable",
+      promedio_valor: { $avg: "$valor" },
+      maximo_valor: { $max: "$valor" },
+      total_lecturas: { $sum: 1 }
+    }
+  }
+])
+db.mediciones.aggregate([
+  {
+    $match: { variable: "temperatura" }
+  },
+  {
+    $project: {
+      _id: 0,
+      variable: 1,
+      temperatura_celsius: "$valor",
+      temperatura_fahrenheit: {
+        $round: [
+          { $add: [{ $multiply: ["$valor", 1.8] }, 32] },
+          2
+        ]
+      },
+      unidad_original: "$unidad",
+      fecha_medicion: 1
+    }
+  }
+])
 
 #Parte 2 
