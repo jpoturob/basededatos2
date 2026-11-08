@@ -1,1 +1,167 @@
+espacios
+const espacio1 = {
+  "_id": ObjectId(),
+  "nombre": "Sala 101",
+  "tipo": "Sala de clases",
+  "edificio": "Edificio A",
+  "piso": 1,
+  "capacidad": 40,
+  "estado": "Activo"
+};
+
+db.espacios.insertOne(espacio1);
+
+const espacio2 = {
+  "_id": ObjectId(),
+  "nombre": "Laboratorio 1",
+  "tipo": "Laboratorio",
+  "edificio": "Edificio B",
+  "piso": 1,
+  "capacidad": 25,
+  "estado": "Activo"
+};
+
+db.espacios.insertMany([espacio2]);
+
+// Comprobar inserciones
+db.espacios.find();
+
+const espaciosNuevos = [
+{ "_id": ObjectId(), "nombre": "Sala 201", "tipo": "Sala de clases", "edificio": "Edificio A", "piso": 2, "capacidad": 45, "estado": "Activo" },
+{ "_id": ObjectId(), "nombre": "Laboratorio 2", "tipo": "Laboratorio", "edificio": "Edificio B", "piso": 2, "capacidad": 30, "estado": "Activo" },
+{ "_id": ObjectId(), "nombre": "Biblioteca Central", "tipo": "Biblioteca", "edificio": "Edificio C", "piso": 1, "capacidad": 100, "estado": "Activo" },
+{ "_id": ObjectId(), "nombre": "Sala de estudio 1", "tipo": "Estudio", "edificio": "Edificio C", "piso": 2, "capacidad": 20, "estado": "Activo" },
+{ "_id": ObjectId(), "nombre": "Sala de estudio 2", "tipo": "Estudio", "edificio": "Edificio C", "piso": 2, "capacidad": 15, "estado": "Activo" },
+{ "_id": ObjectId(), "nombre": "Auditorio", "tipo": "Auditorio", "edificio": "Edificio D", "piso": 1, "capacidad": 200, "estado": "Activo" },
+{ "_id": ObjectId(), "nombre": "Casino", "tipo": "Comedor", "edificio": "Edificio D", "piso": 1, "capacidad": 120, "estado": "Activo" },
+{ "_id": ObjectId(), "nombre": "Sala 301", "tipo": "Sala de clases", "edificio": "Edificio A", "piso": 3, "capacidad": 40, "estado": "Activo" },
+{ "_id": ObjectId(), "nombre": "Sala 302", "tipo": "Sala de clases", "edificio": "Edificio A", "piso": 3, "capacidad": 35, "estado": "Inactivo" },
+{ "_id": ObjectId(), "nombre": "Laboratorio 3", "tipo": "Laboratorio", "edificio": "Edificio B", "piso": 3, "capacidad": 20, "estado": "Activo" },
+{ "_id": ObjectId(), "nombre": "Sala de reuniones", "tipo": "Reuniones", "edificio": "Edificio E", "piso": 1, "capacidad": 12, "estado": "Activo" },
+{ "_id": ObjectId(), "nombre": "Gimnasio", "tipo": "Deportivo", "edificio": "Edificio F", "piso": 1, "capacidad": 80, "estado": "Activo" },
+{ "_id": ObjectId(), "nombre": "Enfermería", "tipo": "Servicio", "edificio": "Edificio F", "piso": 1, "capacidad": 10, "estado": "Activo" },
+{ "_id": ObjectId(), "nombre": "Sala de profesores", "tipo": "Oficina", "edificio": "Edificio E", "piso": 2, "capacidad": 18, "estado": "Activo" },
+{ "_id": ObjectId(), "nombre": "Centro de recursos", "tipo": "Estudio", "edificio": "Edificio C", "piso": 3, "capacidad": 25, "estado": "Activo" },
+{ "_id": ObjectId(), "nombre": "Sala multimedia", "tipo": "Laboratorio", "edificio": "Edificio B", "piso": 2, "capacidad": 22, "estado": "Activo" },
+{ "_id": ObjectId(), "nombre": "Espacio común", "tipo": "Área común", "edificio": "Edificio D", "piso": 2, "capacidad": 60, "estado": "Activo" },
+{ "_id": ObjectId(), "nombre": "Sala de computación", "tipo": "Laboratorio", "edificio": "Edificio B", "piso": 4, "capacidad": 35, "estado": "Activo" }
+];
+db.espacios.insertMany(espaciosNuevos);
+
+dispositivos
+
+const dispositivo1 = { "_id": ObjectId(), "nombre": "Sensor Ambiental 01", "tipo": "Multisensor", "fabricante": "SensorTech", "modelo": "ST-100", "estado": "Activo", "espacio_id": espacio1._id, "configuracion": { "temperatura": { "unidad": "°C", "umbral_minimo": 15, "umbral_maximo": 30 }, "humedad": { "unidad": "%", "umbral_minimo": 20, "umbral_maximo": 70 }, "co2": { "unidad": "ppm", "umbral_maximo": 1000 }, "luminosidad": { "unidad": "lux", "umbral_minimo": 300 } }, "fecha_instalacion": ISODate("2026-10-01T10:00:00Z") };
+db.dispositivos.insertOne(dispositivo1);
+const dispositivo2 = { "_id": ObjectId(), "nombre": "Sensor Ambiental 02", "tipo": "Multisensor", "fabricante": "IoT Campus", "modelo": "IC-200", "estado": "Activo", "espacio_id": espacio2._id, "configuracion": { "temperatura": { "unidad": "°C", "umbral_minimo": 15, "umbral_maximo": 30 }, "humedad": { "unidad": "%", "umbral_minimo": 20, "umbral_maximo": 70 }, "co2": { "unidad": "ppm", "umbral_maximo": 1000 }, "luminosidad": { "unidad": "lux", "umbral_minimo": 300 } }, "fecha_instalacion": ISODate("2026-10-05T10:00:00Z") };
+db.dispositivos.insertMany([dispositivo2]);
+
+const dispositivosNuevos = espaciosNuevos.map((espacio, i) => ({
+  "_id": ObjectId(),
+  "nombre": "Sensor Ambiental " + String(i + 3).padStart(2, "0"),
+  "tipo": i % 3 === 0 ? "Multisensor" : i % 3 === 1 ? "Sensor de CO2" : "Sensor ambiental",
+  "fabricante": i % 2 === 0 ? "SensorTech" : "IoT Campus",
+  "modelo": i % 2 === 0 ? "ST-100" : "IC-200",
+  "estado": i === 8 ? "Inactivo" : "Activo",
+  "espacio_id": espacio._id,
+  "configuracion": {
+    "temperatura": { "unidad": "°C", "umbral_minimo": 15, "umbral_maximo": 30 },
+    "humedad": { "unidad": "%", "umbral_minimo": 20, "umbral_maximo": 70 },
+    "co2": { "unidad": "ppm", "umbral_maximo": 1000 },
+    "luminosidad": { "unidad": "lux", "umbral_minimo": 300 }
+  },
+  "fecha_instalacion": new Date(Date.UTC(2026, 9, 1 + i, 10, 0, 0))
+}));
+
+db.dispositivos.insertMany(dispositivosNuevos);
+
+mediciones
+
+const medicion1 = { "_id": ObjectId(), "dispositivo_id": dispositivo1._id, "variable": "temperatura", "valor": 28.5, "unidad": "°C", "fecha_medicion": ISODate("2026-11-03T10:30:00Z"), "origen": "Sensor IoT", "estado_medicion": "Normal" };
+db.mediciones.insertOne(medicion1);
+const medicion2 = { "_id": ObjectId(), "dispositivo_id": dispositivo2._id, "variable": "co2", "valor": 1450, "unidad": "ppm", "fecha_medicion": ISODate("2026-11-03T11:00:00Z"), "origen": "Sensor IoT", "estado_medicion": "Fuera de rango" };
+db.mediciones.insertMany([medicion2]);
+const datosMediciones = [
+{ "variable": "temperatura", "valor": 22.5, "unidad": "°C", "estado": "Normal" },
+{ "variable": "humedad", "valor": 55, "unidad": "%", "estado": "Normal" },
+{ "variable": "co2", "valor": 1200, "unidad": "ppm", "estado": "Fuera de rango" },
+{ "variable": "luminosidad", "valor": 450, "unidad": "lux", "estado": "Normal" },
+{ "variable": "temperatura", "valor": 33.2, "unidad": "°C", "estado": "Fuera de rango" },
+{ "variable": "humedad", "valor": 75, "unidad": "%", "estado": "Fuera de rango" },
+{ "variable": "co2", "valor": 850, "unidad": "ppm", "estado": "Normal" },
+{ "variable": "luminosidad", "valor": 180, "unidad": "lux", "estado": "Fuera de rango" },
+{ "variable": "temperatura", "valor": 19.8, "unidad": "°C", "estado": "Normal" },
+{ "variable": "humedad", "valor": 65, "unidad": "%", "estado": "Normal" },
+{ "variable": "co2", "valor": 1600, "unidad": "ppm", "estado": "Fuera de rango" },
+{ "variable": "luminosidad", "valor": 520, "unidad": "lux", "estado": "Normal" },
+{ "variable": "temperatura", "valor": 31.5, "unidad": "°C", "estado": "Fuera de rango" },
+{ "variable": "humedad", "valor": 35, "unidad": "%", "estado": "Normal" },
+{ "variable": "co2", "valor": 950, "unidad": "ppm", "estado": "Normal" },
+{ "variable": "luminosidad", "valor": 220, "unidad": "lux", "estado": "Fuera de rango" },
+{ "variable": "temperatura", "valor": 25.0, "unidad": "°C", "estado": "Normal" },
+{ "variable": "co2", "valor": 1350, "unidad": "ppm", "estado": "Fuera de rango" }
+];
+
+const medicionesNuevas = dispositivosNuevos.map((dispositivo, i) => ({
+  "_id": ObjectId(),
+  "dispositivo_id": dispositivo._id,
+  "variable": datosMediciones[i].variable,
+  "valor": datosMediciones[i].valor,
+  "unidad": datosMediciones[i].unidad,
+  "fecha_medicion": new Date(Date.UTC(2026, 10, 3, 12 + i, 0, 0)),
+  "origen": "Sensor IoT",
+  "estado_medicion": datosMediciones[i].estado
+}));
+
+db.mediciones.insertMany(medicionesNuevas);
+
+alertas
+
+const alerta1 = { "_id": ObjectId(), "medicion_id": medicion2._id, "dispositivo_id": dispositivo2._id, "espacio_id": espacio2._id, "tipo": "Concentración de CO2 elevada", "descripcion": "La concentración de CO2 superó el umbral máximo permitido.", "valor_detectado": 1450, "umbral_establecido": 1000, "gravedad": "Alta", "estado": "Pendiente", "fecha_generacion": ISODate("2026-11-03T11:05:00Z") };
+db.alertas.insertOne(alerta1);
+const alerta2 = { "_id": ObjectId(), "medicion_id": medicion1._id, "dispositivo_id": dispositivo1._id, "espacio_id": espacio1._id, "tipo": "Temperatura cercana al límite", "descripcion": "La temperatura se encuentra dentro del rango, pero próxima al umbral máximo.", "valor_detectado": 28.5, "umbral_establecido": 30, "gravedad": "Baja", "estado": "Resuelta", "fecha_generacion": ISODate("2026-11-03T10:35:00Z") };
+db.alertas.insertMany([alerta2]);
+const alertasNuevas = medicionesNuevas.map((medicion, i) => {
+  const dispositivo = dispositivosNuevos[i];
+  const espacio = espaciosNuevos[i];
+  const fueraDeRango = medicion.estado_medicion === "Fuera de rango";
+
+  const umbrales = {
+    "temperatura": 30,
+    "humedad": 70,
+    "co2": 1000,
+    "luminosidad": 300
+  };
+
+  const nombres = {
+    "temperatura": "Temperatura fuera de rango",
+    "humedad": "Humedad fuera de rango",
+    "co2": "Concentración de CO2 elevada",
+    "luminosidad": "Luminosidad insuficiente"
+  };
+
+  return {
+    "_id": ObjectId(),
+    "medicion_id": medicion._id,
+    "dispositivo_id": dispositivo._id,
+    "espacio_id": espacio._id,
+    "tipo": fueraDeRango ? nombres[medicion.variable] : "Advertencia preventiva",
+    "descripcion": fueraDeRango ? "La medición superó el umbral establecido en " + espacio.nombre + "." : "Se generó una advertencia preventiva para revisar las condiciones ambientales de " + espacio.nombre + ".",
+    "valor_detectado": medicion.valor,
+    "umbral_establecido": umbrales[medicion.variable],
+    "gravedad": fueraDeRango ? (medicion.variable === "co2" || medicion.variable === "temperatura" ? "Alta" : "Media") : "Baja",
+    "estado": i % 2 === 0 ? "Pendiente" : "Resuelta",
+    "fecha_generacion": medicion.fecha_medicion
+  };
+});
+
+db.alertas.insertMany(alertasNuevas);
+
+print("Espacios: " + db.espacios.countDocuments());
+print("Dispositivos: " + db.dispositivos.countDocuments());
+print("Mediciones: " + db.mediciones.countDocuments());
+print("Alertas: " + db.alertas.countDocuments());
+
+
+
+
 
