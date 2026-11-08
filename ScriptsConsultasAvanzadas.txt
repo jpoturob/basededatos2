@@ -49,3 +49,33 @@ db.mediciones.aggregate([
 ])
 
 #Parte 2 
+db.dispositivos.find(
+  { nombre: { $regex: "sensor", $options: "i" } },
+  { _id: 0, nombre: 1, tipo: 1, estado: 1 }
+).sort({ estado: 1 })
+
+db.dispositivos.find(
+  {
+    $and: [
+      { "configuracion.temperatura.umbral_maximo": { $gt: 25 } },
+      { "configuracion.humedad.umbral_maximo": { $lt: 80 } }
+    ]
+  },
+  { _id: 0, nombre: 1, "configuracion.temperatura.umbral_maximo": 1, "configuracion.humedad.umbral_maximo": 1 }
+)
+
+db.dispositivos.aggregate([
+  { $match: { "configuracion.temperatura.umbral_maximo": { $exists: true } } },
+  { $sort: { "configuracion.temperatura.umbral_maximo": -1 } },
+  { $limit: 3 },
+  { $project: { _id: 0, nombre: 1, umbral_max_temp: "$configuracion.temperatura.umbral_maximo" } }
+])
+
+db.dispositivos.aggregate([
+  { $match: { estado: { $exists: true } } },
+  { $group: {
+      _id: "$estado",
+      total_dispositivos: { $sum: 1 },
+      promedio_umbral_min_temp: { $avg: "$configuracion.temperatura.umbral_minimo" }
+  }}
+])
