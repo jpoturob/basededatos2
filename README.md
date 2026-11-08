@@ -67,11 +67,3 @@ db.mediciones.findOne()
 db.alertas.findOne()
 ```
 
-En una ejecución desde cero, las cantidades finales esperadas son 20 espacios, 23 dispositivos, 26 mediciones y 24 alertas. El bloque de conteo que ya está en `inserts.js` aparece antes de las inserciones complementarias, así que muestra los totales previos a esos datos; las consultas anteriores permiten verificar el resultado final.
-
-## Consideraciones para la revisión
-
-- Las inserciones complementarias conservan referencias con `ObjectId` fijos y algunos campos con nombres distintos a los documentos principales. Por ello, no todas las referencias complementarias necesariamente apuntan a los documentos generados durante la misma carga.
-- MongoDB distingue mayúsculas y minúsculas en los nombres de colecciones. `ScriptsDelete.js` usa `Mediciones` y `Alertas` con mayúscula inicial, mientras que la carga principal crea `mediciones` y `alertas` en minúsculas. Antes de ejecutar esas eliminaciones, hay que comprobar y unificar los nombres de las colecciones; de lo contrario, se operaría sobre colecciones diferentes.
-- Las operaciones de actualización y eliminación modifican datos. Para revisar esos ejemplos, se recomienda usar una base de prueba y verificar primero los filtros con consultas `find`.
-- Los scripts son ejemplos para ejecución manual y revisión académica; no incluyen una aplicación cliente.
