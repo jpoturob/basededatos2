@@ -1,38 +1,77 @@
-# BASEDEDATOS2
+# Proyecto de base de datos
 
-## Instalación de MongoDB Shell (mongosh)
+## Presentación
 
-Si no tienes instalado MongoDB Shell en tu computador, puedes descargarlo desde el siguiente enlace:
+Este repositorio reúne los archivos del proyecto de MongoDB para administrar espacios de un campus y monitorear sus condiciones ambientales mediante dispositivos IoT. El conjunto de datos representa espacios, dispositivos, mediciones y alertas; los scripts asociados permiten consultar y realizar operaciones sobre esa información.
 
-[Descargar MongoDB Shell (mongosh) 2.14.1](https://downloads.mongodb.com/compass/mongosh-2.14.1-x64.msi)
+## Modelo de información
 
-Una vez descargado, ejecuta el instalador y sigue los pasos para completar la instalación.
+La base de datos utiliza cuatro colecciones principales:
 
-## Instrucciones para ingresar a MongoDB mediante mongosh
+| Colección | Contenido | Relación principal |
+|---|---|---|
+| `espacios` | Salas, laboratorios, biblioteca y otros espacios, con ubicación, capacidad y estado. | Un espacio puede tener dispositivos asociados. |
+| `dispositivos` | Sensores, sus características, configuración de umbrales y estado. | `espacio_id` identifica el espacio asociado. |
+| `mediciones` | Lecturas ambientales, como temperatura, humedad, CO2 y luminosidad, junto con valor, unidad, fecha y estado. | `dispositivo_id` identifica el sensor que generó la lectura. |
+| `alertas` | Avisos derivados de las condiciones registradas, incluyendo tipo, gravedad, estado y fecha. | En el conjunto principal se relacionan con mediciones, dispositivos y espacios. |
 
-**1. Abrir PowerShell** en el computador.
+MongoDB es una base de datos documental: los registros son documentos y pueden incluir objetos anidados, por ejemplo, la configuración de umbrales de un dispositivo.
 
-**2. Copiar y pegar el siguiente comando:**
+## Archivos del repositorio
 
-```bash
-mongosh "mongodb+srv://clusterecommerce.uv7ifpb.mongodb.net/" --apiVersion 1 --username TU_USUARIO --password TU_CONTRASEÑA
+| Archivo | Propósito |
+|---|---|
+| [`Estructuradelosdatos.txt`](./Estructuradelosdatos.txt) | Ejemplos de la estructura de los documentos de las colecciones. |
+| [`inserts.js`](./inserts.js) | Script ejecutable de carga de datos para espacios, dispositivos, mediciones y alertas, incluidas las inserciones complementarias. |
+| [`insertsprincipales.txt`](./insertsprincipales.txt) | Archivo de texto original con las inserciones, conservado como referencia. |
+| [`ScriptsFind.txt`](./ScriptsFind.txt) | Consultas de lectura y filtros sobre las colecciones. |
+| [`ScriptsConsultasAvanzadas.txt`](./ScriptsConsultasAvanzadas.txt) | Consultas y agregaciones para analizar las mediciones y los espacios. |
+| [`ScriptsUpdate.txt`](./ScriptsUpdate.txt) | Ejemplos de actualización de un documento y de varios documentos. |
+| [`ScriptsDelete.js`](./ScriptsDelete.js) | Ejemplos de eliminación acotada de mediciones y alertas. Revisar la nota de ejecución segura antes de usarlo. |
+| [`InformeMongo (1).pdf`](./InformeMongo%20(1).pdf) | Informe complementario del proyecto. |
+
+## Preparación y carga de datos
+
+Se requiere MongoDB Shell (`mongosh`), disponible desde [la página de descarga de MongoDB Shell](https://www.mongodb.com/try/download/shell).
+
+1. Conectarse al despliegue de MongoDB Atlas con la URI, el usuario y la contraseña entregados por el curso. Las credenciales no forman parte de este repositorio y deben ingresarse de manera segura.
+2. Seleccionar la base de datos que corresponde al proyecto:
+
+   ```javascript
+   use NOMBRE_DE_LA_BASE
+   ```
+
+3. Ejecutar el script de carga desde `mongosh`, reemplazando la ruta por la ubicación local del archivo:
+
+   ```javascript
+   load("C:\\ruta\\al\\proyecto\\inserts.js")
+   ```
+
+   El script se ejecuta en el contexto de la base seleccionada y realiza las inserciones en las colecciones `espacios`, `dispositivos`, `mediciones` y `alertas`.
+
+La carga está ordenada por dependencias: primero se crean espacios y dispositivos; luego se insertan mediciones y alertas que utilizan las referencias definidas previamente. Se recomienda ejecutarla una vez en una base vacía o de prueba. Volver a ejecutarla genera documentos adicionales, ya que usa nuevos `ObjectId`.
+
+## Verificación
+
+Al finalizar la carga, se pueden comprobar las cantidades y revisar algunos documentos:
+
+```javascript
+db.espacios.countDocuments()
+db.dispositivos.countDocuments()
+db.mediciones.countDocuments()
+db.alertas.countDocuments()
+
+db.espacios.findOne()
+db.dispositivos.findOne()
+db.mediciones.findOne()
+db.alertas.findOne()
 ```
 
-**3. Reemplazar los datos:**
+En una ejecución desde cero, las cantidades finales esperadas son 20 espacios, 23 dispositivos, 26 mediciones y 24 alertas. El bloque de conteo que ya está en `inserts.js` aparece antes de las inserciones complementarias, así que muestra los totales previos a esos datos; las consultas anteriores permiten verificar el resultado final.
 
-- `TU_USUARIO`: apellido correspondiente al integrante.
-- `TU_CONTRASEÑA`: contraseña asignada a ese usuario.
+## Consideraciones para la revisión
 
-## Credenciales de acceso
-
-| Integrante | Usuario | Contraseña |
-|---|---|---|
-| Núñez | nunez | cN6oy8094WN65yhr |
-| Ruiz | ruiz | g3jWCMQS6VskZLgj |
-| Huerta | huerta | GrKLaOvoaFXPjHFI |
-| Tolentino | tolentino | fY5efgm8STlfw3Ro |
-| Mardones | mardones | KvN4ns4eWQZPwo7u |
-
-**Importante:** cada integrante debe utilizar exclusivamente sus propias credenciales para conectarse a MongoDB Atlas.
-
-
+- Las inserciones complementarias conservan referencias con `ObjectId` fijos y algunos campos con nombres distintos a los documentos principales. Por ello, no todas las referencias complementarias necesariamente apuntan a los documentos generados durante la misma carga.
+- MongoDB distingue mayúsculas y minúsculas en los nombres de colecciones. `ScriptsDelete.js` usa `Mediciones` y `Alertas` con mayúscula inicial, mientras que la carga principal crea `mediciones` y `alertas` en minúsculas. Antes de ejecutar esas eliminaciones, hay que comprobar y unificar los nombres de las colecciones; de lo contrario, se operaría sobre colecciones diferentes.
+- Las operaciones de actualización y eliminación modifican datos. Para revisar esos ejemplos, se recomienda usar una base de prueba y verificar primero los filtros con consultas `find`.
+- Los scripts son ejemplos para ejecución manual y revisión académica; no incluyen una aplicación cliente.
